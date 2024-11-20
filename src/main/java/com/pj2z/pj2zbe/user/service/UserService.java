@@ -13,9 +13,16 @@ public class UserService {
     @Autowired
     UserRepository userRepository;
 
+
     public void save(UserEntity user) {
+        userRepository.save(user);
     }
 
+    /**
+     *
+     * @param email
+     * @return userEntity
+     */
     public UserEntity getUserEmail(String email) {
         return userRepository.findByEmail(email).orElse(null);
     }
@@ -35,6 +42,12 @@ public class UserService {
         return null;
     }
 
+    /**
+     * 함  수  명 : register
+     * 내      용 : 회원가입
+     * @param user
+     * @return boolean(가입 여부 )
+     */
     public boolean register(UserEntity user) {
         if (userRepository.findByEmail(user.getEmail()).isPresent()) {
             return false;
