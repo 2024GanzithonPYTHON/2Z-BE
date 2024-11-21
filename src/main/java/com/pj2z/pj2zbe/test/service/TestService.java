@@ -23,7 +23,7 @@ public class TestService {
     UserRepository userRepository;
 
     public TestResponseDto saveTestResults(TestDto requestDto) {
-        UserEntity user = userRepository.findById(requestDto.getUserId()).orElseThrow(() -> new EntityNotFoundException("User not found"));
+        UserEntity user = userRepository.findByNickname(requestDto.getNickname()).orElseThrow(() -> new EntityNotFoundException("User not found"));
 
         try {
             Map<String, Integer> testResults = requestDto.getTestResults();
@@ -43,7 +43,7 @@ public class TestService {
 
             return TestResponseDto.builder()
                     .status("success")
-                    .message("Test results saved successfully")
+                    .message("Test results saved")
                     .timestamp(new Timestamp(System.currentTimeMillis()).toString())
                     .statusCode(200)
                     .path("/tests/initial")
