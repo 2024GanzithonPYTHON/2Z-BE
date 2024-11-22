@@ -1,5 +1,11 @@
 package com.pj2z.pj2zbe.recommend.service;
 
+import com.pj2z.pj2zbe.common.exception.TestNotFoundException;
+import com.pj2z.pj2zbe.common.exception.UserNotFoundException;
+import com.pj2z.pj2zbe.goal.entity.GoalEntity;
+import com.pj2z.pj2zbe.goal.entity.UserGoalEntity;
+import com.pj2z.pj2zbe.goal.repository.GoalRepository;
+import com.pj2z.pj2zbe.goal.repository.UserGoalRepository;
 import com.pj2z.pj2zbe.recommend.dto.request.ChatGPTRequest;
 import com.pj2z.pj2zbe.recommend.dto.request.RecommendRequest;
 import com.pj2z.pj2zbe.recommend.dto.response.ChatGPTResponse;
@@ -7,6 +13,7 @@ import com.pj2z.pj2zbe.recommend.dto.response.RecommendResponse;
 import com.pj2z.pj2zbe.test.entity.Test;
 import com.pj2z.pj2zbe.test.repository.TestRepository;
 import com.pj2z.pj2zbe.user.entity.UserEntity;
+import com.pj2z.pj2zbe.user.enums.UserGoalYN;
 import com.pj2z.pj2zbe.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +21,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;@Slf4j
+import org.springframework.web.client.RestTemplate;
+
+import java.util.List;
+
+@Slf4j
 
 @Service
 @Transactional(readOnly = true)
@@ -24,6 +35,8 @@ public class RecommendService {
     private final RestTemplate restTemplate;
     private final UserRepository userRepository;
     private final TestRepository testRepository;
+    private final GoalRepository goalRepository;
+    private final UserGoalRepository userGoalRepository;
 
     @Value("${openai.api.url}")
     private String apiURL;
@@ -36,21 +49,37 @@ public class RecommendService {
 
     public RecommendResponse getRecommendation(RecommendRequest request) {
         UserEntity user = userRepository.findById(request.userId())
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         Test test = testRepository.findByUserId(request.userId())
-                .orElseThrow(() -> new IllegalArgumentException("Test not found"));
+                .orElseThrow(() -> new TestNotFoundException("Test not found"));
 
-        String prompt = createPrompt(request, test, user);
+        List<String> goalNames = fetchUserGoals(user, request.userId());
+
+        String prompt = createPrompt(request, test, goalNames);
         ChatGPTResponse gptResponse = sendRequestToGPT(prompt);
 
         return formatGPTResponse(gptResponse);
     }
 
-    private String createPrompt(RecommendRequest request, Test test, UserEntity user) {
-        return String.format(promptTemplate,
+    private List<String> fetchUserGoals(UserEntity user, Long userId) {
+        if (user.getUserGoalYN() == UserGoalYN.N) {
+            return null;
+        }
+        return userGoalRepository.findAllByUserId(userId)
+                .orElseThrow(() -> new IllegalArgumentException("No goals found for user"))
+                .stream()
+                .map(UserGoalEntity::getGoal)
+                .map(GoalEntity::getGoalName)
+                .toList();
+    }
+
+    private String createPrompt(RecommendRequest request, Test test, List<String> goalNames) {
+        return String.format(
+                promptTemplate,
                 String.join(", ", request.choices()),
                 request.setting(),
+                goalNames != null ? String.join(", ", goalNames) : "",
                 test.getExtroversion(),
                 test.getDecision(),
                 test.getRisk(),
@@ -62,7 +91,7 @@ public class RecommendService {
     }
 
     private ChatGPTResponse sendRequestToGPT(String prompt) {
-        log.info("prompt: {}", prompt);
+        log.info("GPT한테 보내는 prompt 내용: {}", prompt);
         ChatGPTRequest chatGPTRequest = ChatGPTRequest.fromPrompt(model, prompt);
 
         HttpHeaders headers = new HttpHeaders();

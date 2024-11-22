@@ -25,6 +25,4 @@ public class RecommendController {
         RecommendResponse response = recommendService.getRecommendation(request);
         return new RspTemplate<>(HttpStatus.OK, "성공적으로 추천받았습니다.", response);
     }
-
-
 }

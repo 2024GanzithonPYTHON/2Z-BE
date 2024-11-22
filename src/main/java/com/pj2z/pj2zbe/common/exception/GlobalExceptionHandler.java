@@ -14,13 +14,15 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-/*    @ExceptionHandler({
-//            NotFoundUserException.class
+    @ExceptionHandler({
+            UserNotFoundException.class,
+            TestNotFoundException.class,
+            GoalNotFoundException.class
     })
     public ResponseEntity<Map<String, Object>> handleNotFound(RuntimeException e) {
         log.error(e.getMessage());
         return getErrorResponse(HttpStatus.NOT_FOUND, e.getMessage());
-    }*/
+    }
 
     @ExceptionHandler(ServerException.class)
     public ResponseEntity<Map<String, Object>> handleServerException(ServerException e) {
