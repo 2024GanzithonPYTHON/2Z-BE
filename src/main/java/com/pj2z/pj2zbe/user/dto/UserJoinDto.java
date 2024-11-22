@@ -1,6 +1,7 @@
 package com.pj2z.pj2zbe.user.dto;
 
 import com.pj2z.pj2zbe.user.entity.UserEntity;
+import com.pj2z.pj2zbe.user.enums.UserGoalYN;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -27,6 +28,7 @@ public class UserJoinDto {
                 .email(this.email)
                 .nickname(this.nickname)
                 .password(this.password)
+                .userGoalYN(UserGoalYN.Y)
                 .build();
     }
 }
