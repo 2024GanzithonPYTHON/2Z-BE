@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -26,6 +27,12 @@ public class TestService {
     public TestResponseDto saveTestResults(TestDto requestDto) {
         UserEntity user = userRepository.findById(requestDto.getUserId()).orElseThrow(() -> new EntityNotFoundException("User not found"));
 
+//        List<Test> userTests = testRepository.findByUser(user);
+//        for (Test test : userTests){
+//            test.setUse_yn("N");
+//        }
+//        testRepository.saveAll(userTests);
+
         try {
             Map<String, Integer> testResults = requestDto.getTestResults();
 
@@ -38,7 +45,7 @@ public class TestService {
             test.setTime(testResults.getOrDefault("time", 0));
             test.setSocial(testResults.getOrDefault("social", 0));
             test.setBudget(testResults.getOrDefault("budget", 0));
-            test.setCreated_At(new Timestamp(System.currentTimeMillis()));
+            test.setUse_yn("Y");
 
             testRepository.save(test);
 
@@ -57,7 +64,10 @@ public class TestService {
     public TestResponseDto updateTestResults(TestUpdateDto updateDto){
         UserEntity user = userRepository.findById(updateDto.getUserId()).orElseThrow(() -> new EntityNotFoundException("User not found"));
 
-        Test test = testRepository.findByUser(user).orElseThrow(() -> new EntityNotFoundException("No test results found for the user"));
+        Test test = testRepository.findTopByUserOrderByCreatedAtDesc(user);
+        if (test == null) {
+            throw new EntityNotFoundException("No test results found for the user");
+        }
 
         try{
             Map<String, Integer> updatedResults = updateDto.getUpdatedTestResults();
@@ -68,7 +78,6 @@ public class TestService {
             test.setTime(updatedResults.getOrDefault("time", test.getTime()));
             test.setSocial(updatedResults.getOrDefault("social", test.getSocial()));
             test.setBudget(updatedResults.getOrDefault("budget", test.getBudget()));
-//            test.setCreated_At(new Timestamp(System.currentTimeMillis()));
 
             testRepository.save(test);
 
