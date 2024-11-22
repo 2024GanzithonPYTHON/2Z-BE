@@ -2,6 +2,7 @@ package com.pj2z.pj2zbe.test.service;
 
 import com.pj2z.pj2zbe.test.dto.TestDto;
 import com.pj2z.pj2zbe.test.dto.TestResponseDto;
+import com.pj2z.pj2zbe.test.dto.TestUpdateDto;
 import com.pj2z.pj2zbe.test.entity.Test;
 import com.pj2z.pj2zbe.test.repository.TestRepository;
 import com.pj2z.pj2zbe.user.entity.UserEntity;
@@ -50,6 +51,37 @@ public class TestService {
                     .build();
         }  catch (Exception e) {
             throw new RuntimeException("Error occurred while saving test results", e);
+        }
+    }
+
+    public TestResponseDto updateTestResults(TestUpdateDto updateDto){
+        UserEntity user = userRepository.findById(updateDto.getUserId()).orElseThrow(() -> new EntityNotFoundException("User not found"));
+
+        Test test = testRepository.findByUser(user).orElseThrow(() -> new EntityNotFoundException("No test results found for the user"));
+
+        try{
+            Map<String, Integer> updatedResults = updateDto.getUpdatedTestResults();
+            test.setExtroversion(updatedResults.getOrDefault("extroversion", test.getExtroversion()));
+            test.setDecision(updatedResults.getOrDefault("decision", test.getDecision()));
+            test.setRisk(updatedResults.getOrDefault("risk", test.getRisk()));
+            test.setComfort(updatedResults.getOrDefault("comfort", test.getComfort()));
+            test.setTime(updatedResults.getOrDefault("time", test.getTime()));
+            test.setSocial(updatedResults.getOrDefault("social", test.getSocial()));
+            test.setBudget(updatedResults.getOrDefault("budget", test.getBudget()));
+//            test.setCreated_At(new Timestamp(System.currentTimeMillis()));
+
+            testRepository.save(test);
+
+            return TestResponseDto.builder()
+                    .status("success")
+                    .message("Test results updated successfully")
+                    .timestamp(new Timestamp(System.currentTimeMillis()).toString())
+                    .statusCode(200)
+                    .path("/personalities/update")
+                    .build();
+
+        }catch (Exception e) {
+            throw new RuntimeException("Error occurred while updating test results", e);
         }
     }
 
