@@ -15,3 +15,9 @@ spring:
       hibernate:
         format_sql: true
         use_sql_comments: true
+openai:
+  model: ${OPEN_AI_MODEL}
+  api:
+    key: ${OPEN_AI_API_KEY}
+    url: ${OPEN_AI_API_URL}
+  prompt: ${OPEN_AI_PROMPT}
