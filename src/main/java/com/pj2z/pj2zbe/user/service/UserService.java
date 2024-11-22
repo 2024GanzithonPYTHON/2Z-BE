@@ -1,6 +1,7 @@
 package com.pj2z.pj2zbe.user.service;
 
 import com.pj2z.pj2zbe.user.entity.UserEntity;
+import com.pj2z.pj2zbe.user.enums.UserGoalYN;
 import com.pj2z.pj2zbe.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,9 +15,15 @@ public class UserService {
     UserRepository userRepository;
 
 
-    public void save(UserEntity user) {
-        userRepository.save(user);
+    public boolean save(UserEntity user) {
+        try {
+            userRepository.save(user);
+            return true;
+        }catch (Exception e) {
+            return false;
+        }
     }
+
 
     /**
      *
@@ -25,6 +32,10 @@ public class UserService {
      */
     public UserEntity getUserEmail(String email) {
         return userRepository.findByEmail(email).orElse(null);
+    }
+
+    public UserEntity getUserId(Long id) {
+        return userRepository.findById(id).orElse(null);
     }
 
 
@@ -54,5 +65,14 @@ public class UserService {
         }
         userRepository.save(user);
         return true;
+    }
+
+    public UserGoalYN getUserGoalYN(Long userid) {
+        Optional<UserEntity> user = userRepository.findById(userid);
+        if (user.isEmpty()) {
+            return null;
+        }else {
+            return user.get().getUserGoalYN();
+        }
     }
 }

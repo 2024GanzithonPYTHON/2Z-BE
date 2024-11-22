@@ -1,5 +1,6 @@
 package com.pj2z.pj2zbe.user.entity;
 
+import com.pj2z.pj2zbe.user.enums.UserGoalYN;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,6 +28,10 @@ public class UserEntity {
     @Column(nullable = false)
     private String nickname;
 
+    @Column(nullable = false,name = "GOAL_YN")
+    @Enumerated(EnumType.STRING)
+    private UserGoalYN userGoalYN;
+
     @Column(name = "created_at")
     private Timestamp created_At; //계정 생성일
 
@@ -43,4 +48,8 @@ public class UserEntity {
         this.updated_At = new Timestamp(System.currentTimeMillis());
     }
 
+
+    public void setUserGoalYN(UserGoalYN userGoalYN) {
+        this.userGoalYN = userGoalYN;
+    }
 }
