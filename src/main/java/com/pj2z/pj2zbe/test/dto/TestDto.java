@@ -8,6 +8,6 @@ import java.util.Map;
 @Getter
 @Setter
 public class TestDto {
-    private String nickname;
+    private Long userId;
     private Map<String, Integer> testResults;
 }
