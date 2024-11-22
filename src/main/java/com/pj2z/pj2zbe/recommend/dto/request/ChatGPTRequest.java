@@ -1,15 +1,19 @@
-/*
 package com.pj2z.pj2zbe.recommend.dto.request;
 
-import java.util.ArrayList;
+import lombok.Builder;
+
 import java.util.List;
 
-public record ChatGPTRequest(
+@Builder
+public record ChatGPTRequest (
         String model,
         List<Message> messages
 ) {
-    public ChatGPTRequest(String model, String prompt) {
-        this(model, List.of(new Message("user", prompt)));
+
+    public static ChatGPTRequest fromPrompt(String model, String prompt) {
+        return ChatGPTRequest.builder()
+                .model(model)
+                .messages(List.of(new Message("user", prompt)))
+                .build();
     }
 }
-*/

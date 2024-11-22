@@ -1,4 +1,3 @@
-/*
 package com.pj2z.pj2zbe.recommend.dto.response;
 
 import com.pj2z.pj2zbe.recommend.dto.request.Message;
@@ -6,10 +5,10 @@ import com.pj2z.pj2zbe.recommend.dto.request.Message;
 import java.util.List;
 
 public record ChatGPTResponse(
-        List<Select> selects,
+        List<Choice> choices,
         Usage usage
 ) {
-    public record Select(
+    public record Choice(
             Message message
     ) {
     }
@@ -21,4 +20,3 @@ public record ChatGPTResponse(
     ) {
     }
 }
-*/
