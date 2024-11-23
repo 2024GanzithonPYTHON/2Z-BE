@@ -14,15 +14,7 @@ public class MyPageService {
     @Autowired
     UserRepository userRepository;
 
-//    public MyPageResponseDto getUserNickname(MyPageDto requestDto){
-//        UserEntity user = userRepository.findById(requestDto.getUserId()).orElseThrow(() -> new EntityNotFoundException("User not found"));
-//
-//        return MyPageResponseDto.builder()
-//                .nickname(user.getNickname())
-//                .build();
-//    }
-
-    public MyPageResponseDto getLoggedInUserNickname(Long userId) {
+    public MyPageResponseDto getUserNickname(Long userId) {
         // 로그인된 사용자를 ID로 조회
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
