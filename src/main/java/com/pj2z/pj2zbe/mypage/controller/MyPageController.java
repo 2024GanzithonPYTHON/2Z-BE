@@ -19,7 +19,7 @@ public class MyPageController {
 
     @GetMapping("/mypage")
     public ResponseEntity<MyPageResponseDto> getNickname(@RequestBody MyPageDto requestDto) {
-        MyPageResponseDto response = myPageService.getLoggedInUserNickname(requestDto.getUserId());
+        MyPageResponseDto response = myPageService.getUserNickname(requestDto.getUserId());
         return ResponseEntity.ok(response);
     }
 
