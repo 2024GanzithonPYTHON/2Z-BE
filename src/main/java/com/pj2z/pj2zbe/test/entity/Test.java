@@ -4,6 +4,7 @@ import com.pj2z.pj2zbe.user.entity.UserEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.sql.Timestamp;
 
@@ -11,7 +12,7 @@ import java.sql.Timestamp;
 @Setter
 @Entity
 @Table(name = "Test")
-public class Test {
+public class Test extends Timestamped{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -19,9 +20,6 @@ public class Test {
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
-
-    @Column(name = "created_at",nullable = false)
-    private Timestamp created_At;
 
     @Column(nullable = false)
     private Integer extroversion;
@@ -44,8 +42,8 @@ public class Test {
     @Column(nullable = false)
     private Integer budget;
 
-    @PrePersist
-    public void prePersist() {
-        this.created_At = new Timestamp(System.currentTimeMillis());
-    }
+    @Column(nullable = false)
+    @ColumnDefault("'Y'")
+    private String use_yn;
+
 }
