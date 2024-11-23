@@ -49,8 +49,7 @@ public class RecommendService {
         UserEntity user = userRepository.findById(request.userId())
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
-        Test test = testRepository.findByUserId(request.userId())
-                .orElseThrow(() -> new TestNotFoundException("Test not found"));
+        Test test = testRepository.findTopByUserIdOrderByCreatedAtDesc(request.userId());
 
         List<String> goalNames = fetchUserGoals(user, request.userId());
 

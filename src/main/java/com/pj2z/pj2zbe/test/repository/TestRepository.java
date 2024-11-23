@@ -11,4 +11,6 @@ import java.util.Optional;
 public interface TestRepository extends JpaRepository<Test, Long> {
     Optional<Test> findByUserId(Long aLong);
     Test findTopByUserOrderByCreatedAtDesc(UserEntity user);
+    Test findTopByUserIdOrderByCreatedAtDesc(Long userId);
+
 }
