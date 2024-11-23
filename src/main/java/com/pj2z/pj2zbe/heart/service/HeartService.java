@@ -48,4 +48,11 @@ public class HeartService {
                 .orElseThrow(() -> new UserNotFoundException("Heart not found"));
         return HeartResponse.from(heart);
     }
+
+    @Transactional
+    public void deleteHeart(Long heartId) {
+        Heart heart = heartRepository.findById(heartId)
+                .orElseThrow(() -> new UserNotFoundException("Heart not found"));
+        heartRepository.delete(heart);
+    }
 }

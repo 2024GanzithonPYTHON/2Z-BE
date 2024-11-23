@@ -15,9 +15,9 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/hearts")
 public class HeartController {
+
     private final HeartService heartService;
 
-    // 저장, 조회, 삭제
     @PostMapping
     public RspTemplate<String> createHeart(@Valid @RequestBody HeartSaveRequest request) {
         heartService.saveHeart(request);
@@ -34,6 +34,12 @@ public class HeartController {
     public RspTemplate<HeartResponse> getHeart(@PathVariable Long heartId) {
         HeartResponse response = heartService.retrieveOneHeart(heartId);
         return new RspTemplate<>(HttpStatus.OK, "성공적으로 좋아요를 조회했습니다.", response);
+    }
+
+    @DeleteMapping("/{heartId}")
+    public RspTemplate<String> deleteHeart(@PathVariable Long heartId) {
+        heartService.deleteHeart(heartId);
+        return new RspTemplate<>(HttpStatus.NO_CONTENT, "성공적으로 좋아요를 취소했습니다.");
     }
 
 }
