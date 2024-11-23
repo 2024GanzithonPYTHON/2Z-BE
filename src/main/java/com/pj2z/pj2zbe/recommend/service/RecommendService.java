@@ -4,7 +4,6 @@ import com.pj2z.pj2zbe.common.exception.TestNotFoundException;
 import com.pj2z.pj2zbe.common.exception.UserNotFoundException;
 import com.pj2z.pj2zbe.goal.entity.GoalEntity;
 import com.pj2z.pj2zbe.goal.entity.UserGoalEntity;
-import com.pj2z.pj2zbe.goal.repository.GoalRepository;
 import com.pj2z.pj2zbe.goal.repository.UserGoalRepository;
 import com.pj2z.pj2zbe.recommend.dto.request.ChatGPTRequest;
 import com.pj2z.pj2zbe.recommend.dto.request.RecommendRequest;
@@ -35,7 +34,6 @@ public class RecommendService {
     private final RestTemplate restTemplate;
     private final UserRepository userRepository;
     private final TestRepository testRepository;
-    private final GoalRepository goalRepository;
     private final UserGoalRepository userGoalRepository;
 
     @Value("${openai.api.url}")
@@ -75,11 +73,17 @@ public class RecommendService {
     }
 
     private String createPrompt(RecommendRequest request, Test test, List<String> goalNames) {
+        String retryPrompt = (request.retry() != null) ? request.retry() + "=> 다만 이 선택지는 제외하고 추천해주세요." : "";
+        String setting = (request.setting() != null) ? request.setting() : "";
+        String goals = (goalNames != null) ? String.join(", ", goalNames) : "";
+
         return String.format(
                 promptTemplate,
+                // 정규화도 고려해볼 수 있다. 다만 사용자가 어떻게 입력할지 모르므로 일단은 그대로 사용
+                retryPrompt,
                 String.join(", ", request.choices()),
-                request.setting(),
-                goalNames != null ? String.join(", ", goalNames) : "",
+                setting,
+                goals,
                 test.getExtroversion(),
                 test.getDecision(),
                 test.getRisk(),
