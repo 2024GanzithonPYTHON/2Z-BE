@@ -1,8 +1,11 @@
 package com.pj2z.pj2zbe.user.controller;
 
+import com.pj2z.pj2zbe.test.entity.Test;
+import com.pj2z.pj2zbe.test.service.TestService;
 import com.pj2z.pj2zbe.user.dto.UserJoinDto;
 import com.pj2z.pj2zbe.user.dto.UserLoginDto;
 import com.pj2z.pj2zbe.user.dto.UserResponseDto;
+import com.pj2z.pj2zbe.user.dto.UsetLoginResponseDTO;
 import com.pj2z.pj2zbe.user.entity.UserEntity;
 import com.pj2z.pj2zbe.user.enums.UserResponseMessage;
 import com.pj2z.pj2zbe.user.service.UserService;
@@ -23,6 +26,8 @@ public class UserController {
     @Autowired
     UserService userService;
 
+    @Autowired
+    TestService testService;
     /************************************************************************************
      * 함  수  명      : userJoin
      * 내      용      : 회원가입
@@ -70,9 +75,17 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(UserResponseMessage.USER_NOT_FOUND.getMessage());
         }else {
-            return ResponseEntity
-                    .ok(new UserResponseDto(UserResponseMessage.LOGIN_SUCCESS.getMessage()
-                                                , user.getId(), user.getNickname()));
+            Test test = testService.getTest(user.getId());
+            if(test ==null) {
+                return ResponseEntity
+                        .ok(new UsetLoginResponseDTO(UserResponseMessage.LOGIN_SUCCESS.getMessage()
+                                , user.getId(), user.getNickname(),"N"));
+            }else{
+
+                return ResponseEntity
+                        .ok(new UsetLoginResponseDTO(UserResponseMessage.LOGIN_SUCCESS.getMessage()
+                                , user.getId(), user.getNickname(),"Y"));
+            }
         }
 
     }

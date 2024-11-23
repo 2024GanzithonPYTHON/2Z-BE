@@ -93,6 +93,9 @@ public class TestService {
             throw new RuntimeException("Error occurred while updating test results", e);
         }
     }
+    public Test getTest(Long userId){
+        return testRepository.findTopByUserIdOrderByCreatedAtDesc(userId);
+    }
 
 
 }
