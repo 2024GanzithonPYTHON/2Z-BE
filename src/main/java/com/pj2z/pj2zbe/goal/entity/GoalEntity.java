@@ -10,7 +10,7 @@ public class GoalEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column
+    @Column(unique = true)
     private String goalName;
 
     @Column
