@@ -9,5 +9,4 @@ import java.util.Map;
 @Builder
 public class MyPageResponseDto {
     private String nickname;
-    private Map<String, String> answerResults;
 }
