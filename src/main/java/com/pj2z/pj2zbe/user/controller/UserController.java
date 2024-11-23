@@ -42,7 +42,7 @@ public class UserController {
         if (userService.register(userJoinDto.toUserEntity())) {
             Long userId = userService.getUserEmail(userJoinDto.getEmail()).getId();
             return ResponseEntity.status(HttpStatus.CREATED)
-                    .body(new UserResponseDto(UserResponseMessage.SIGN_SUCCESS.getMessage(), userId));
+                    .body(new UserResponseDto(UserResponseMessage.SIGN_SUCCESS.getMessage(), userId,userJoinDto.getNickname()));
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(UserResponseMessage.SIGN_FAILURE.getMessage());
