@@ -72,7 +72,7 @@ public class UserController {
         }else {
             return ResponseEntity
                     .ok(new UserResponseDto(UserResponseMessage.LOGIN_SUCCESS.getMessage()
-                                                , user.getId()));
+                                                , user.getId(), user.getNickname()));
         }
 
     }
